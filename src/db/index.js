@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient
 
+/** @type import 'mongodb'.Db */
 let db
 let client
 
@@ -12,7 +13,11 @@ MongoClient.connect(process.env.MONGO_URI, function (err, client) {
   db = client.db(process.env.DB_NAME)
 })
 
-module.exports = { db }
+function getDb () {
+  return db
+}
+
+module.exports = { getDb }
 
 process.on('SIGINT', () => {
   client.close()

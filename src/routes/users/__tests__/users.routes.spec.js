@@ -10,7 +10,6 @@ jest.setTimeout(10000)
 jest.mock('../../../db/index')
 jest.mock('google-auth-library', () => ({
   OAuth2Client: function () {
-    console.log('OAuth2Client')
     return { verifyIdToken: () => ({ getPayload: () => ({}) }) }
   }
 }))

@@ -6,8 +6,9 @@ async function verify (token) {
     idToken: token,
     audience: '748723176251-kk8i1m6h1dmcduriooi86c2o6f61v5m0.apps.googleusercontent.com'
   })
-  const payload = ticket.getPayload()
-  console.log('user validated', payload)
+  const { sub: googleId, given_name: firstName, family_name: lastName, email } = ticket.getPayload()
+  console.log('user validated', { googleId, firstName, lastName, email })
+  return { googleId, firstName, lastName, email }
 }
 
 module.exports = { verify }

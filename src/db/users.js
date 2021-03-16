@@ -23,7 +23,7 @@ async function getUser (id) {
 function createUser ({ firstName, lastName, email }) {
   return getDb()
     .collection('users')
-    .insertOne({ firstName, lastName, email })
+    .updateOne({ email }, { $set: { firstName, lastName, email } }, { upsert: true })
 }
 
 module.exports = { getAllUsers, getUser, createUser }

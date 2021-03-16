@@ -4,12 +4,12 @@ const MongoClient = require('mongodb').MongoClient
 let db
 let client
 
-MongoClient.connect(process.env.MONGO_URI, function (err, client) {
+MongoClient.connect(process.env.MONGO_URI, function (err, mongoClient) {
   if (err) {
     throw err
   }
   console.log('Connected successfully to server')
-
+  client = mongoClient
   db = client.db(process.env.DB_NAME)
 })
 

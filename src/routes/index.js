@@ -13,13 +13,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(authenticate)
-
-app.use(function (req, res, next) {
-  const { firstName, lastName, email } = res.locals.userData
-  createUser({ firstName, lastName, email })
-    .then(() => next())
-    .catch(e => res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message))
-})
+app.use(ensureUserInDb)
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -40,4 +34,11 @@ function authenticate (req, res, next) {
       next()
     })
     .catch(e => res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message))
+}
+
+function ensureUserInDb (req, res, next) {
+  const { firstName, lastName, email } = res.locals.userData
+  createUser({ firstName, lastName, email })
+    .catch(e => console.error(e))
+    .then(() => next())
 }

@@ -1,11 +1,21 @@
 const bodyParser = require('body-parser')
 const users = require('./users')
 const express = require('express')
+const { verify } = require('./auth')
+const { StatusCodes } = require('http-status-codes')
+const cors = require('cors')
 
 const app = express()
 
+app.use(cors({ credentials: true, origin: true }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(function (req, res, next) {
+  verify(req.headers.authorization)
+    .then(() => next())
+    .catch(e => res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message))
+})
 
 app.get('/', (req, res) => {
   res.send('Hello World!')

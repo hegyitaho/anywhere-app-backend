@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { app } = require('./routes')
 
 const port = 3000

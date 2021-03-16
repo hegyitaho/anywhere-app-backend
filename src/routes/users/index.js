@@ -18,12 +18,16 @@ router.get('/search', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   if (!req.params.id) {
-    return res.status(StatusCodes.BAD_REQUEST).send('id is required')
+    return res.status(StatusCodes.BAD_REQUEST).send('"id" is required')
   }
   try {
-    res.send(await getUser(req.params.id))
+    const user = await getUser(req.params.id)
+    if (!user.id) {
+      return res.sendStatus(StatusCodes.NOT_FOUND)
+    }
+    res.send(user)
   } catch (e) {
-    return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR)
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message)
   }
 })
 
@@ -52,5 +56,5 @@ const newUserSchema = Joi.object({
 const userQuerySchema = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
-  email: Joi.string().email()
+  email: Joi.string()
 })

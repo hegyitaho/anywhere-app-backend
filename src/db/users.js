@@ -1,4 +1,5 @@
-const { pickBy, isNil, complement } = require('ramda')
+const { ObjectId } = require('mongodb').ObjectId
+const { pickBy, isNil, complement, map } = require('ramda')
 const { getDb } = require('./index')
 
 function getAllUsers ({ firstName, lastName, email } = {}) {
@@ -9,13 +10,14 @@ function getAllUsers ({ firstName, lastName, email } = {}) {
     .find(filter)
     .limit(25)
     .toArray()
+    .then(map(({ firstName, lastName, email, _id }) => ({ firstName, lastName, email, id: _id.toString() })))
 }
 
-function getUser (id) {
-  const { firstName, lastName, _id } = getDb()
+async function getUser (id) {
+  const { firstName, lastName, email, _id } = (await getDb()
     .collection('users')
-    .findOne({ _id: id })
-  return { firstName, lastName, id: _id }
+    .findOne({ _id: ObjectId(id) })) || {}
+  return { firstName, lastName, email, id: _id }
 }
 
 module.exports = { getAllUsers, getUser }

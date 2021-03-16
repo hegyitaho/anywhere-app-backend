@@ -9,4 +9,8 @@ app.get('/', (req, res) => {
 
 app.use('/users', users)
 
+app.get('*', function (req, res) {
+  res.status(404)
+})
+
 module.exports = { app }

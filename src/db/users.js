@@ -20,7 +20,13 @@ async function getUser (id) {
   return { firstName, lastName, email, id: _id }
 }
 
-module.exports = { getAllUsers, getUser }
+function createUser ({ firstName, lastName, email }) {
+  return getDb()
+    .collection('users')
+    .insertOne({ firstName, lastName, email })
+}
+
+module.exports = { getAllUsers, getUser, createUser }
 
 function createStartsWithFilter ({ firstName, lastName, email }) {
   return Object.fromEntries(

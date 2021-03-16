@@ -1,7 +1,7 @@
 const express = require('express')
 const Joi = require('joi')
 const { StatusCodes } = require('http-status-codes')
-const { getAllUsers, getUser } = require('../../db/users')
+const { getAllUsers, getUser, createUser } = require('../../db/users')
 const router = express.Router()
 
 router.get('/search', async (req, res) => {
@@ -32,17 +32,17 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const { error } = newUserSchema.validate(req.query)
+  const { error } = newUserSchema.validate(req.body)
   if (error) {
+    console.error(error)
     return res.status(StatusCodes.BAD_REQUEST).send(error.message)
   }
   try {
-    await newUserSchema.validateAsync()
+    await createUser(req.body)
+    res.sendStatus(StatusCodes.CREATED)
   } catch (e) {
-    return res.status(StatusCodes.BAD_REQUEST).send(e.message)
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message)
   }
-
-  res.sendStatus(StatusCodes.CREATED)
 })
 
 module.exports = router

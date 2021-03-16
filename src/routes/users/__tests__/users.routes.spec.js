@@ -66,6 +66,18 @@ describe('users endpoints', () => {
       .get('/users/' + uniqueUser._id)
       .expect(200, { id: _id.toString(), ...rest })
   })
+  test('create new user', async () => {
+    const uniqueUser = User()
+    await request(app)
+      .post('/users')
+      .send(uniqueUser)
+      .expect(201)
+    expect(await users.find({})
+      .toArray())
+      .toEqual([
+        expect.objectContaining({ ...uniqueUser, _id: expect.anything() })
+      ])
+  })
 })
 
 function createUsers (number) {
